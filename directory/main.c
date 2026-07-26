@@ -12,7 +12,7 @@
 #include "../base/lt.h"
 #include "../shared/protocol.h"
 
-global b32 DIRECTORY_SHOULD_CLOSE = TRUE;
+global b32 DIRECTORY_SHOULD_CLOSE = FALSE;
 
 typedef struct {
     Net_Addr addr;
@@ -117,7 +117,7 @@ int main(void)
                 {
                     // NOTE(laith): we are checking for expired servers by replacing them even if their in_use is true but they're not last seen
                     u64 now = lt_os_time_now_ms();
-                    if ((SERVERS[i].in_use && SERVERS[i].addr.ip == clientAddr.ip && SERVERS[i].addr.port == clientAddr.port) || (now - SERVERS[i].last_seen > SERVER_EXPIRE_MS))
+                    if ((SERVERS[i].in_use && SERVERS[i].addr.ip == clientAddr.ip && SERVERS[i].addr.port == RegisterRequest.port) || (now - SERVERS[i].last_seen > SERVER_EXPIRE_MS))
                     {
                         target = &SERVERS[i];
                         break;

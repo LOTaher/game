@@ -51,7 +51,7 @@ typedef enum
 // NOTE(laith): going to be taking the performance hit by packing bytes, this is ok since the directory is not required to be very compute heavy
 #pragma pack(push, 1)
 typedef struct {
-    DirectoryPacketType   type;
+    u8                       type;
     u16                      port;
     char                     region[32];
 } DirectoryRegisterRequest;
@@ -67,7 +67,7 @@ typedef struct {
 } DirectoryListEntry;
 
 typedef struct {
-    DirectoryPacketType     type;
+    u8                      type;
     u8                      count;
     DirectoryListEntry      entries[DIRECTORY_MAX_SERVERS];
 } DirectoryListResponse;
