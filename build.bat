@@ -5,7 +5,7 @@ set BASE=base
 set SHARED=shared
 set RAYLIB=vendor\raylib
 
-set BASE_SRC=%BASE%\lt_arena.c %BASE%\lt_net.c %BASE%\lt_string.c %BASE%\lt_os_win32.c %BASE%\lt_net_win32.c
+set BASE_SRC=%BASE%\lt_arena.c %BASE%\lt_net.c %BASE%\lt_string.c %BASE%\lt_mem_win32.c %BASE%\lt_net_win32.c %BASE%\lt_time_win32.c %BASE%\lt_thread_win32.c
 
 set TARGET=%1
 if "%TARGET%"=="" set TARGET=all

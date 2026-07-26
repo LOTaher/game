@@ -43,15 +43,13 @@ typedef double   f64;
 #define TRUE 1
 #define FALSE 0
 
-/* --- OS Library --- */
+/* --- Memory Library --- */
 
-extern void* lt_os_reserve(u64 size);               // Reserve address space without physical commits.
-extern b32   lt_os_commit(void* ptr, u64 size);     // Commit pages and map to physical memory.
-extern void  lt_os_decommit(void* ptr, u64 size);   // Decommit pages.
-extern void  lt_os_release(void* ptr, u64 size);    // Release the reservation.
-extern u64   lt_os_page_size(void);                 // Check the page size of the system.
-
-extern u64   lt_os_time_now_ms(void);               // Monotonic ms for measuring elapsed time.
+extern void* lt_mem_reserve(u64 size);               // Reserve address space without physical commits.
+extern b32   lt_mem_commit(void* ptr, u64 size);     // Commit pages and map to physical memory.
+extern void  lt_mem_decommit(void* ptr, u64 size);   // Decommit pages.
+extern void  lt_mem_release(void* ptr, u64 size);    // Release the reservation.
+extern u64   lt_mem_page_size(void);                 // Check the page size of the system.
 
 /* --- Arena Library --- */
 
@@ -132,5 +130,21 @@ extern i64      lt_net_tcp_recv(Socket sock, void* buf, u64 size);              
 extern b32      lt_net_tcp_recv_exact(Socket sock, void* buf, u64 buffer_size, u64 recv_size);  // (TCP) Recieves a specific number of bytes from a connected socket.
 extern i64      lt_net_udp_sendto(Socket sock, const void* data, u64 size, Net_Addr addr);      // (UDP) Send to an address.
 extern i64      lt_net_udp_recvfrom(Socket sock, void* buf, u64 size, Net_Addr* out_addr);      // (UDP) Receive, capturing sender address.
+
+/* --- Time Library --- */
+
+extern u64   lt_time_now_ms(void);               // Monotonic ms for measuring elapsed time.
+extern void  lt_time_sleep_ms(u64 ms);           // Pause calling for a number of milliseconds
+
+/* --- Thread Library --- */
+
+typedef struct {
+    u64 handle; // NOTE(laith): HANDLE (cast from void*) on wind32, pthread_t on linux
+} Thread;
+
+typedef void (*Thread_Func)(void* arg);
+
+extern Thread lt_thread_create(Thread_Func func, void* arg);   // Create and start a new thread that is running func(arg)
+extern void   lt_thread_join(Thread thread);                   // Block until the thread finishes
 
 #endif // LT_H

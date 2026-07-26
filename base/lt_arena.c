@@ -3,10 +3,10 @@
 
 Arena* lt_arena_create(u64 capacity)
 {
-    u64 page_size = lt_os_page_size();
+    u64 page_size = lt_mem_page_size();
     capacity = lt_arena_align_forward(capacity, page_size);
 
-    void* base = lt_os_reserve(capacity);
+    void* base = lt_mem_reserve(capacity);
     if (base == NULL) {
         return NULL;
     }
@@ -16,8 +16,8 @@ Arena* lt_arena_create(u64 capacity)
         initial_commit = capacity;
     }
 
-    if (!lt_os_commit(base, initial_commit)) {
-        lt_os_release(base, capacity);
+    if (!lt_mem_commit(base, initial_commit)) {
+        lt_mem_release(base, capacity);
         return NULL;
     }
 
@@ -30,7 +30,7 @@ Arena* lt_arena_create(u64 capacity)
 
 void lt_arena_destroy(Arena* arena)
 {
-    lt_os_release(arena, arena->capacity);
+    lt_mem_release(arena, arena->capacity);
 }
 
 u64 lt_arena_align_forward(u64 pos, u64 alignment)
@@ -48,7 +48,7 @@ void* lt_arena_push(Arena* arena, u64 size)
     }
 
     if (new_pos > arena->committed) {
-        u64 page_size = lt_os_page_size();
+        u64 page_size = lt_mem_page_size();
         u64 needed = lt_arena_align_forward(new_pos, page_size);
         u64 grow_to = MAX(needed, arena->committed + LT_ARENA_COMMIT_CHUNK);
         grow_to = MIN(grow_to, arena->capacity);
@@ -56,7 +56,7 @@ void* lt_arena_push(Arena* arena, u64 size)
         u64 commit_size = grow_to - arena->committed;
         u8* commit_ptr = (u8*)arena + arena->committed;
 
-        if (!lt_os_commit(commit_ptr, commit_size)) {
+        if (!lt_mem_commit(commit_ptr, commit_size)) {
             return NULL;
         }
         arena->committed = grow_to;

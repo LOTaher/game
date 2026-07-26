@@ -68,7 +68,7 @@ int main(void)
 
                 for (u8 i = 0; i < DIRECTORY_MAX_SERVERS; ++i)
                 {
-                    u64 now = lt_os_time_now_ms();
+                    u64 now = lt_time_now_ms();
                     Server server = SERVERS[i];
 
                     if (!server.in_use) continue;
@@ -116,7 +116,7 @@ int main(void)
                 for (u8 i = 0; i < DIRECTORY_MAX_SERVERS; ++i)
                 {
                     // NOTE(laith): we are checking for expired servers by replacing them even if their in_use is true but they're not last seen
-                    u64 now = lt_os_time_now_ms();
+                    u64 now = lt_time_now_ms();
                     if ((SERVERS[i].in_use && SERVERS[i].addr.ip == clientAddr.ip && SERVERS[i].addr.port == RegisterRequest.port) || (now - SERVERS[i].last_seen > SERVER_EXPIRE_MS))
                     {
                         target = &SERVERS[i];
@@ -144,7 +144,7 @@ int main(void)
                     target->addr.port = RegisterRequest.port;
                     memcpy(target->region, RegisterRequest.region, sizeof(target->region));
                     target->in_use = TRUE;
-                    target->last_seen = lt_os_time_now_ms();
+                    target->last_seen = lt_time_now_ms();
                 }
                 else {
                     // NOTE(laith): list full since the target didn't take a new slot. just log and drop.
